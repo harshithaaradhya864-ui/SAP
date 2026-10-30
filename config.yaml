@@ -1,0 +1,54 @@
+# EnerGuard settings. The factory reads this file and plugs in the matching
+# implementation of each interface (no code changes needed to switch).
+
+device_id: motor-1
+load_type: induction_motor
+
+signal:
+  mode: ac            # ac = mains motor/SMPS, dc = DC motor
+  fs: 860             # ADS1115 samples per second
+  mains_hz: 50
+
+source:
+  type: simulated     # simulated | serial
+  serial_port: /dev/ttyACM0
+  baud: 115200
+  realtime: false     # simulated only: true = one window per real second (for the dashboard demo)
+  rated_rms: 0.8      # simulated motor current in amps
+
+store:
+  type: sqlite        # sqlite | influx
+  sqlite_path: data/energuard.db
+  influx:
+    url: http://localhost:8086
+    token: CHANGE_ME
+    org: energuard
+
+models:
+  root: models
+  isolation_forest: true
+  lstm_autoencoder: true          # needs PyTorch; set false to run with Isolation Forest only
+  fusion_weights: {if: 0.5, ae: 0.5}
+  fusion_strong: 0.8              # one model alone can alert if its score > 0.5 / 0.8 = 0.625
+  ae:
+    seq_len: 60
+    epochs: 30
+
+alerts:
+  threshold: 0.5      # fused score that counts as abnormal
+  consecutive: 3      # abnormal seconds in a row before alerting
+  clear_after: 60     # normal seconds before a new alert (= the autoencoder's 60 s memory)
+
+notify:
+  console: true
+  telegram:
+    enabled: false
+    bot_token: ""
+    chat_id: ""
+  email:
+    enabled: false
+    smtp_host: smtp.gmail.com
+    smtp_port: 587
+    user: ""
+    password: ""      # Gmail app password, not your normal password
+    to: ""

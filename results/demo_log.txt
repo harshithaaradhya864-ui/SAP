@@ -1,0 +1,55 @@
+
+=== 1. Record healthy running ===
+Recording 45 min of healthy running...
+     600 s  rms 0.806 A  recording  alerts 0  (0s elapsed)
+    1200 s  rms 0.810 A  recording  alerts 0  (1s elapsed)
+    1800 s  rms 0.796 A  recording  alerts 0  (1s elapsed)
+    2400 s  rms 0.797 A  recording  alerts 0  (1s elapsed)
+Saved 2700 seconds of healthy data.
+
+=== 2. Train model v1 (Isolation Forest + LSTM autoencoder) ===
+Training on 2700 s of healthy data...
+Model v1 trained in 6s with ['if', 'ae'] and activated.
+
+=== 3. Live monitoring test with injected faults ===
+Evaluation run: 110 min with 4 injected faults, 3 harmless start-ups and a harmless load change...
+[pipeline] using model version v1
+    1200 s  rms 0.811 A  score 0.04  alerts 1  (17s elapsed)
+    2400 s  rms 0.806 A  score 0.31  alerts 3  (35s elapsed)
+    3600 s  rms 0.829 A  score 1.00  alerts 4  (53s elapsed)
+    4800 s  rms 0.809 A  score 0.03  alerts 4  (69s elapsed)
+    6000 s  rms 0.862 A  score 0.79  alerts 5  (86s elapsed)
+
+Fault detection (live run):
+  friction    ( 120 s): caught after 2 s
+  smps        ( 120 s): caught after 2 s
+  loose_wire  (  60 s): caught after 3 s
+  bearing     (1800 s): caught after 195 s
+  false alarms: 1 in 1.25 h of healthy running (0.8/h)
+
+Why two models (same data replayed):
+  Isolation Forest only    caught 3/4, false alarms 4, delays {'friction': None, 'smps': 2, 'loose_wire': 2, 'bearing': 182}
+  LSTM autoencoder only    caught 4/4, false alarms 3, delays {'friction': 4, 'smps': 8, 'loose_wire': 9, 'bearing': 10}
+  Both (fused)             caught 4/4, false alarms 1, delays {'friction': 2, 'smps': 2, 'loose_wire': 3, 'bearing': 195}
+
+Alerts:
+  motor-1-1767228902  medium Mechanical overload or shaft friction
+  motor-1-1767229502  high   SMPS overload / power-supply distortion
+  motor-1-1767230103  high   Loose wire or bad connection
+  motor-1-1767230895  low    Gradual wear (likely bearing)
+  motor-1-1767234205  medium Mechanical overload or shaft friction
+
+Report and chart saved in results/
+
+=== 4. Maintenance user labels every alert ===
+Simulated feedback: 4 real faults, 1 false alarms.
+
+=== 5. Retrain with feedback (MLOps) ===
+Retraining on 4188 s of trusted healthy data (1 false-alarm periods added as normal, 4 confirmed faults kept for testing)...
+  current v1: {'false_alarms': 1, 'false_alarm_periods': 1, 'healthy_test_minutes': 4.2, 'faults_caught': 4, 'faults_total': 4}
+  new     v2: {'false_alarms': 0, 'false_alarm_periods': 1, 'healthy_test_minutes': 4.2, 'faults_caught': 4, 'faults_total': 4}
+v2 is better and is now active (the live pipeline picks it up within a minute).
+
+=== 6. Model versions ===
+  v1  initial training  {'train_seconds': 6.3}
+* v2  retrained from v1 with feedback  {'false_alarms': 0, 'false_alarm_periods': 1, 'healthy_test_minutes': 4.2, 'faults_caught': 4, 'faults_total': 4, 'compared_with': 1, 'accepted': True}

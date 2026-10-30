@@ -1,0 +1,193 @@
+{
+  "model_version": [
+    1
+  ],
+  "live": {
+    "faults": [
+      {
+        "fault": "friction",
+        "duration_s": 120,
+        "detected": true,
+        "delay_s": 2
+      },
+      {
+        "fault": "smps",
+        "duration_s": 120,
+        "detected": true,
+        "delay_s": 2
+      },
+      {
+        "fault": "loose_wire",
+        "duration_s": 60,
+        "detected": true,
+        "delay_s": 3
+      },
+      {
+        "fault": "bearing",
+        "duration_s": 1800,
+        "detected": true,
+        "delay_s": 195
+      }
+    ],
+    "faults_detected": 4,
+    "faults_total": 4,
+    "false_alarms": 1,
+    "false_alarm_ts": [
+      1767234205.0
+    ],
+    "healthy_hours": 1.25,
+    "false_alarms_per_hour": 0.8
+  },
+  "ablation": {
+    "Isolation Forest only": {
+      "faults": [
+        {
+          "fault": "friction",
+          "duration_s": 120,
+          "detected": false,
+          "delay_s": null
+        },
+        {
+          "fault": "smps",
+          "duration_s": 120,
+          "detected": true,
+          "delay_s": 2
+        },
+        {
+          "fault": "loose_wire",
+          "duration_s": 60,
+          "detected": true,
+          "delay_s": 2
+        },
+        {
+          "fault": "bearing",
+          "duration_s": 1800,
+          "detected": true,
+          "delay_s": 182
+        }
+      ],
+      "faults_detected": 3,
+      "faults_total": 4,
+      "false_alarms": 4,
+      "false_alarm_ts": [
+        1767228889.0,
+        1767230435.0,
+        1767230674.0,
+        1767234202.0
+      ],
+      "healthy_hours": 1.25,
+      "false_alarms_per_hour": 3.2
+    },
+    "LSTM autoencoder only": {
+      "faults": [
+        {
+          "fault": "friction",
+          "duration_s": 120,
+          "detected": true,
+          "delay_s": 4
+        },
+        {
+          "fault": "smps",
+          "duration_s": 120,
+          "detected": true,
+          "delay_s": 8
+        },
+        {
+          "fault": "loose_wire",
+          "duration_s": 60,
+          "detected": true,
+          "delay_s": 9
+        },
+        {
+          "fault": "bearing",
+          "duration_s": 1800,
+          "detected": true,
+          "delay_s": 10
+        }
+      ],
+      "faults_detected": 4,
+      "faults_total": 4,
+      "false_alarms": 3,
+      "false_alarm_ts": [
+        1767229417.0,
+        1767233473.0,
+        1767234207.0
+      ],
+      "healthy_hours": 1.25,
+      "false_alarms_per_hour": 2.4
+    },
+    "Both (fused)": {
+      "faults": [
+        {
+          "fault": "friction",
+          "duration_s": 120,
+          "detected": true,
+          "delay_s": 2
+        },
+        {
+          "fault": "smps",
+          "duration_s": 120,
+          "detected": true,
+          "delay_s": 2
+        },
+        {
+          "fault": "loose_wire",
+          "duration_s": 60,
+          "detected": true,
+          "delay_s": 3
+        },
+        {
+          "fault": "bearing",
+          "duration_s": 1800,
+          "detected": true,
+          "delay_s": 195
+        }
+      ],
+      "faults_detected": 4,
+      "faults_total": 4,
+      "false_alarms": 1,
+      "false_alarm_ts": [
+        1767234205.0
+      ],
+      "healthy_hours": 1.25,
+      "false_alarms_per_hour": 0.8
+    }
+  },
+  "alerts": [
+    {
+      "alert_id": "motor-1-1767228902",
+      "ts": 1767228902.0,
+      "severity": "medium",
+      "cause": "Mechanical overload or shaft friction",
+      "fused_score": 0.8
+    },
+    {
+      "alert_id": "motor-1-1767229502",
+      "ts": 1767229502.0,
+      "severity": "high",
+      "cause": "SMPS overload / power-supply distortion",
+      "fused_score": 0.8
+    },
+    {
+      "alert_id": "motor-1-1767230103",
+      "ts": 1767230103.0,
+      "severity": "high",
+      "cause": "Loose wire or bad connection",
+      "fused_score": 0.8
+    },
+    {
+      "alert_id": "motor-1-1767230895",
+      "ts": 1767230895.0,
+      "severity": "low",
+      "cause": "Gradual wear (likely bearing)",
+      "fused_score": 0.538
+    },
+    {
+      "alert_id": "motor-1-1767234205",
+      "ts": 1767234205.0,
+      "severity": "medium",
+      "cause": "Mechanical overload or shaft friction",
+      "fused_score": 0.747
+    }
+  ]
+}
